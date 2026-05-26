@@ -669,6 +669,156 @@
   .footer .vals span:nth-child(3) { color: var(--ink-soft); }
   .footer .vals span:nth-child(4) { color: var(--ink); }
 
+  /* ---------- uitleg knop ---------- */
+  .btn-uitleg {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-soft);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn-uitleg:hover {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  /* ---------- modal ---------- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(19,25,43,0.72);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open {
+    display: flex;
+  }
+  .modal {
+    background: var(--bg-card);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(19,25,43,0.32);
+    position: relative;
+    animation: modal-in .22s ease-out;
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to   { opacity: 1; transform: none; }
+  }
+  .modal-header {
+    background: var(--blue-900);
+    color: #fff;
+    border-radius: 20px 20px 0 0;
+    padding: 28px 28px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .modal-header::after {
+    content: '';
+    position: absolute;
+    right: -40px; bottom: -40px;
+    width: 140px; height: 140px;
+    background: var(--brand-green);
+    border-radius: 50%;
+    opacity: 0.18;
+  }
+  .modal-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brand-green);
+    font-weight: 700;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .modal-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: rgba(255,255,255,0.12);
+    border: none;
+    color: rgba(255,255,255,0.8);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: background .15s;
+    position: absolute;
+    z-index: 1;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.25); }
+  .modal-body {
+    padding: 24px 28px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .rule-block {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .rule-icon {
+    font-size: 22px;
+    min-width: 32px;
+    text-align: center;
+    margin-top: 1px;
+  }
+  .rule-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    margin-bottom: 3px;
+    color: var(--ink);
+  }
+  .rule-text {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    font-weight: 500;
+  }
+  .rule-text strong { color: var(--ink); font-weight: 700; }
+  .modal-btn-start {
+    display: block;
+    width: calc(100% - 56px);
+    margin: 20px 28px 24px;
+    background: var(--brand-green);
+    color: var(--blue-900);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 800;
+    font-style: italic;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .modal-btn-start:hover { background: #00d987; }
+
   @media (max-width: 640px) {
     .player-row { grid-template-columns: 1fr; }
     .scoreboard { grid-template-columns: 1fr; }
@@ -698,7 +848,59 @@
       <div class="brand-mark">N</div>
       <div>Next Standard</div>
     </div>
-    <div class="tag-make">Make it work</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="btn-uitleg" id="btnUitleg">? Uitleg</button>
+      <div class="tag-make">Make it work</div>
+    </div>
+  </div>
+
+  <!-- Uitleg modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-eyebrow">/ Spelregels /</div>
+        <h2 class="modal-title">Kamertje verhuren</h2>
+        <button class="modal-close" id="modalClose" aria-label="Sluiten">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="rule-block">
+          <div class="rule-icon">🎯</div>
+          <div>
+            <div class="rule-title">Doel</div>
+            <div class="rule-text">Verdien zoveel mogelijk vakjes. Degene met de meeste vakjes aan het einde wint.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">✏️</div>
+          <div>
+            <div class="rule-title">Een beurt</div>
+            <div class="rule-text">Klik op een lijn tussen twee punten om hem te tekenen. Spelers wisselen om de beurt.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">🏠</div>
+          <div>
+            <div class="rule-title">Vakje veroveren</div>
+            <div class="rule-text">Sluit je met jouw lijn een vakje af (alle 4 zijden getekend)? Dan is dat vakje van jou én mag je <strong>nog een extra beurt</strong> nemen.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">🤖</div>
+          <div>
+            <div class="rule-title">Tegen Claude spelen</div>
+            <div class="rule-text">Kies "Tegen Claude" in de setup. Claude pakt altijd gratis vakjes, speelt veilige zetten en probeert lange ketens te vermijden. Versla hem als je kan.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">📐</div>
+          <div>
+            <div class="rule-title">Bordgroottes</div>
+            <div class="rule-text"><strong>4 × 4</strong> — 9 vakjes, snel potje.<br><strong>6 × 5</strong> — 20 vakjes, standaard.<br><strong>7 × 6</strong> — 30 vakjes, voor de strategen.</div>
+          </div>
+        </div>
+      </div>
+      <button class="modal-btn-start" id="modalBtnStart">Begrepen — spelen maar <span style="font-style:normal">→</span></button>
+    </div>
   </div>
 
   <div class="hero">
@@ -720,11 +922,11 @@
     <div class="player-row" id="playerRow">
       <div class="field">
         <label>/ Speler 1 /</label>
-        <input id="p1name" type="text" maxlength="14" value="Speler 1" autocomplete="off">
+        <input id="p1name" type="text" maxlength="14" value="Stephan" autocomplete="off">
       </div>
       <div class="field" id="p2field">
         <label>/ Speler 2 /</label>
-        <input id="p2name" type="text" maxlength="14" value="Speler 2" autocomplete="off">
+        <input id="p2name" type="text" maxlength="14" value="Coen" autocomplete="off">
       </div>
       <div class="field" id="aiField" style="display:none;">
         <label>/ Tegenstander /</label>
@@ -815,11 +1017,20 @@
 
 <script>
 (function () {
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- uitleg modal ----------
+  const overlay = $('modalOverlay');
+  $('btnUitleg').addEventListener('click', () => overlay.classList.add('open'));
+  $('modalClose').addEventListener('click', () => overlay.classList.remove('open'));
+  $('modalBtnStart').addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') overlay.classList.remove('open'); });
+
+  // ---------- game setup ----------
   let cfg = { w: 6, h: 5, p1: 'Stephan', p2: 'Coen', mode: 'duo', starter: 1 };
   let state = null;
   let aiBusy = false;
-
-  const $ = (id) => document.getElementById(id);
 
   const modeToggle = $('modeToggle');
   modeToggle.addEventListener('click', (e) => {
